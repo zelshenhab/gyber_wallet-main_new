@@ -1,0 +1,46 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "gyber_wallet-main",
+            "type": "dart",
+            "request": "launch",
+            "program": "lib/main_development.dart"
+        },
+        {
+            "name": "gyber_wallet-main (profile mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "gyber_wallet-main (release mode)",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        },
+        {
+            "name": "cs_ui",
+            "cwd": "packages\\cs_ui",
+            "request": "launch",
+            "type": "dart"
+        },
+        {
+            "name": "cs_ui (profile mode)",
+            "cwd": "packages\\cs_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "profile"
+        },
+        {
+            "name": "cs_ui (release mode)",
+            "cwd": "packages\\cs_ui",
+            "request": "launch",
+            "type": "dart",
+            "flutterMode": "release"
+        }
+    ]
+}

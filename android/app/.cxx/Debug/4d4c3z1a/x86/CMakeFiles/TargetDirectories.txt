@@ -1,0 +1,2 @@
+C:/Users/Asus/Desktop/flutter test/gyber_wallet-main/android/app/.cxx/Debug/4d4c3z1a/x86/CMakeFiles/edit_cache.dir
+C:/Users/Asus/Desktop/flutter test/gyber_wallet-main/android/app/.cxx/Debug/4d4c3z1a/x86/CMakeFiles/rebuild_cache.dir
