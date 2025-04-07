@@ -2,6 +2,8 @@ import 'dart:math';
 
 import 'package:crypto_wallet/app/app.dart';
 import 'package:crypto_wallet/domain/repositories/repositories.dart';
+import 'package:crypto_wallet/presentation/home/bloc/home_event.dart';
+import 'package:crypto_wallet/presentation/home/bloc/home_state.dart';
 import 'package:crypto_wallet/presentation/home/home.dart';
 import 'package:cs_ui/cs_ui.dart';
 import 'package:flutter/foundation.dart';

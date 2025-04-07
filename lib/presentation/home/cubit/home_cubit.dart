@@ -6,23 +6,30 @@ import 'package:web3dart/web3dart.dart';
 part 'home_state.dart';
 
 class HomeCubit extends Cubit<HomeState> {
+  final PhraseRepository _phraseRepository;
+  final ContractRepository _contractRepository;
+
   HomeCubit({
     required PhraseRepository phraseRepository,
     required ContractRepository contractRepository,
   })  : _phraseRepository = phraseRepository,
         _contractRepository = contractRepository,
         super(const HomeState()) {
-    emit(
-      state.copyWith(
-        ethBalance: EtherAmount.zero(),
-      ),
-    );
+    // تحديد قيمة البداية للـ ethBalance
+    emit(state.copyWith(ethBalance: EtherAmount.zero()));
   }
 
-  late PhraseRepository _phraseRepository;
-  final ContractRepository _contractRepository;
+  // استخدام _phraseRepository إذا كنت بحاجة له في المستقبل
+  Future<void> getEthBalance(String publicKey) async {
+    // تحويل EthereumAddress إلى String باستخدام hex
+    final ethAddress =
+        EthereumAddress.fromHex(publicKey).hex; // تحويل إلى String
 
-  Future<void> getEthBalance(String publicKey) async {}
+    // استخدام await for للاشتراك في Stream
+    await for (final data in _contractRepository.getEthBalance(ethAddress)) {
+      emit(state.copyWith(ethBalance: data)); // تحديث حالة الرصيد بشكل صحيح
+    }
+  }
 
   @override
   Future<void> close() {

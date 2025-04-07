@@ -1,16 +1,19 @@
+import 'package:crypto_wallet/presentation/authentication/landing/cubit/auth_landing_state.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:crypto_wallet/app/app.dart';
 import 'package:crypto_wallet/domain/repositories/phrase_repository.dart';
 import 'package:crypto_wallet/presentation/authentication/landing/landing.dart';
 import 'package:cs_ui/cs_ui.dart';
-import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_svg/svg.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
+// صفحة الدخول أو الصفحة الرئيسية للمصادقة
 class AuthLandingPage extends StatelessWidget {
   const AuthLandingPage({super.key});
 
   @override
   Widget build(BuildContext context) {
+    // تأكد من توفير الـ Cubit بواسطة BlocProvider
     return BlocProvider(
       create: (context) =>
           AuthLandingCubit(phraseRepository: context.read<PhraseRepository>()),
@@ -35,6 +38,7 @@ class AuthLandingView extends StatelessWidget {
               if (state.status == AuthLandingStatus.failure) {
                 context.showErrorMessage(state.errorMessage);
               } else if (state.status == AuthLandingStatus.success) {
+                // تحديث الحالة إلى "النجاح" وعرض الصفحة التالية
                 context.read<AppCubit>().updateWalletModel(state.walletModel);
                 context.push(WalletPages.home);
               }
@@ -63,9 +67,13 @@ class AuthLandingView extends StatelessWidget {
                   ),
                 ),
                 SizedBox(height: context.minBlockVertical),
+                // تأكد من أن `InputBox` هو عنصر صحيح أو استبداله بعنصر مناسب
                 InputBox(
                   hintText: 'Enter your password',
-                  onChanged: context.read<AuthLandingCubit>().onPasswordChanged,
+                  onChanged: (password) {
+                    // تحديث كلمة المرور
+                    context.read<AuthLandingCubit>().onPasswordChanged(password);
+                  },
                   isPassword: true,
                   validator: (value) {
                     if (value?.isEmpty ?? true) {

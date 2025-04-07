@@ -47,6 +47,7 @@ flutter:
     - assets/images/
     - assets/images/svg/
     - assets/abi/
+    - assets/icons/
     - assets/.env
 
 dependency_overrides:

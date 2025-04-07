@@ -1,8 +1,11 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
+import 'package:web3dart/web3dart.dart';
+
 
 // The HomeState class is used to represent the state of the HomeBloc.
 // It extends the Equatable class, which allows us to compare different instances of HomeState
 // to efficiently determine whether the state has changed.
+
 class HomeState extends Equatable {
   // Constructor for creating a new instance of HomeState,
   // which can optionally take an EtherAmount to initialize the ethBalance property.

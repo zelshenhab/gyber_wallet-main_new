@@ -1,10 +1,8 @@
 import 'package:crypto_wallet/data/repositories/repositories.dart';
-import 'package:crypto_wallet/domain/models/wallet_model.dart';
 import 'package:crypto_wallet/domain/repositories/phrase_repository.dart';
-import 'package:equatable/equatable.dart';
+import 'package:crypto_wallet/presentation/authentication/landing/cubit/auth_landing_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-part 'auth_landing_state.dart';
 
 class AuthLandingCubit extends Cubit<AuthLandingState> {
   AuthLandingCubit({required PhraseRepository phraseRepository})

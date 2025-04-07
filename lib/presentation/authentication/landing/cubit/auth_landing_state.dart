@@ -1,4 +1,7 @@
-part of 'auth_landing_cubit.dart';
+import 'package:crypto_wallet/domain/models/wallet_model.dart';
+import 'package:equatable/equatable.dart';
+
+
 
 enum AuthLandingStatus {
   initial,

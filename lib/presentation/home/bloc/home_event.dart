@@ -1,7 +1,9 @@
-part of 'home_bloc.dart';
+import 'package:equatable/equatable.dart';
+
 
 // Abstract class representing the base for all HomeEvents.
 // It extends Equatable to allow for comparison between instances of HomeEvent.
+
 abstract class HomeEvent extends Equatable {
   const HomeEvent();
 
