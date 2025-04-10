@@ -28,116 +28,139 @@ class CreatePinView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const backgroundColor = Color(0xFF041C2C); // خلفية الشاشة و AppBar
+
     return Scaffold(
+      backgroundColor: backgroundColor,
       appBar: AppBar(
         elevation: 0,
-        backgroundColor: CsColors.background,
+        backgroundColor: backgroundColor,
         centerTitle: true,
-        title: Text(
+        title: const Text(
           'Create your password',
-          style: CsTextStyle.overline.copyWith(
-            fontSize: 20,
-            fontWeight: CsFontWeight.bold,
+          style: TextStyle(
+            color: Color(0xFFD49D32),
+            fontSize: 16,
+            fontWeight: FontWeight.w400,
           ),
         ),
         leading: IconButton(
           onPressed: () => context.back(),
           icon: const Icon(
             Icons.navigate_before,
-            color: CsColors.black,
+            color: Colors.white,
             size: 40,
           ),
         ),
       ),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-            vertical: 20,
-          ),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
           child: BlocListener<CreatePinCubit, CreatePinState>(
             listenWhen: (previous, current) =>
                 previous.status != current.status,
             listener: (context, state) {
               if (state.status == CreatePinStatus.failure) {
-                context.showErrorMessage('Oops an error occur, Try again');
+                context.showErrorMessage('Oops an error occurred, Try again');
               } else if (state.status == CreatePinStatus.success) {
                 context.read<AppCubit>().updateWalletModel(state.walletModel);
-                context.push(
-                  WalletPages.home,
-                );
+                context.push(WalletPages.home);
               }
             },
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  '''To protect the security of your wallet please register a minimum of 8 passcode''',
-                  style: CsTextStyle.overline.copyWith(),
+                Center(
+                  child: Text(
+                    'The password must be at least\n8 characters to be secure',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      color: Colors.white70,
+                      fontSize: 14,
+                    ),
+                  ),
                 ),
-                SizedBox(height: context.minBlockVertical * 7),
-                Text(
+                const SizedBox(height: 40),
+                const Text(
                   'Enter your new password',
-                  style: CsTextStyle.overline.copyWith(),
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
-                SizedBox(height: context.minBlockVertical),
-                InputBox(
-                  hintText: 'Minimum of 8 characters',
-                  onChanged: context.read<CreatePinCubit>().onPasswordChanged,
+                const SizedBox(height: 8),
+                CustomInputBox(
                   isPassword: true,
-                  validator: (value) {
-                    if (value?.isEmpty ?? true) {
-                      return 'Password is required';
-                    }
-
-                    if (value!.length < 8) {
-                      return 'Password too short';
-                    }
-                    return null;
-                  },
+                  onChanged: context.read<CreatePinCubit>().onPasswordChanged,
                 ),
-                SizedBox(height: context.minBlockVertical * 5),
-                Text(
+                const SizedBox(height: 20),
+                const Text(
                   'Confirm password',
-                  style: CsTextStyle.overline.copyWith(),
+                  style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
-                SizedBox(height: context.minBlockVertical),
+                const SizedBox(height: 8),
                 BlocBuilder<CreatePinCubit, CreatePinState>(
                   builder: (context, state) {
-                    return InputBox(
-                      hintText: 'Minimum of 8 characters',
+                    return CustomInputBox(
                       isPassword: true,
                       onChanged: context
                           .read<CreatePinCubit>()
                           .onConfirmPasswordChanged,
-                      validator: (value) {
-                        if (value?.isEmpty ?? true) {
-                          return 'Confirm Password is required';
-                        }
-
-                        if (value!.length < 8) {
-                          return 'Password too short';
-                        }
-
-                        if (value != state.password) {
-                          return 'Password does not match';
-                        }
-                        return null;
-                      },
                     );
                   },
                 ),
                 const Spacer(),
                 BlocBuilder<CreatePinCubit, CreatePinState>(
                   builder: (context, state) {
-                    return SolidButton(
-                      text: 'Create Wallet',
-                      onPressed: state.isValid
-                          ? () => context.read<CreatePinCubit>().getUserKeys(
-                                mnemonics,
-                                state.password,
-                              )
-                          : null,
+                    return Container(
+                      width: double.infinity,
+                      height: 80,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF072B40),
+                        borderRadius: BorderRadius.circular(16),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.4),
+                            blurRadius: 12,
+                            offset: const Offset(0, 6),
+                          ),
+                        ],
+                      ),
+                      padding: const EdgeInsets.all(8),
+                      child: Align(
+                        alignment: Alignment.center, // وسط البطاقة
+                        child: GestureDetector(
+                          onTap: state.isValid
+                              ? () =>
+                                  context.read<CreatePinCubit>().getUserKeys(
+                                        mnemonics,
+                                        state.password,
+                                      )
+                              : null,
+                          child: Container(
+                            width: 170, // ← تحكم هنا في حجم الزر
+                            height: 55,
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF4C9010),
+                                  Color(0xFF4D7DA9),
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
+                              ),
+                              borderRadius: BorderRadius.circular(12),
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'CONTINUE',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                letterSpacing: 1,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     );
                   },
                 ),
@@ -145,6 +168,45 @@ class CreatePinView extends StatelessWidget {
             ),
           ),
         ),
+      ),
+    );
+  }
+}
+
+class CustomInputBox extends StatelessWidget {
+  final bool isPassword;
+  final String hintText;
+  final void Function(String)? onChanged;
+
+  const CustomInputBox({
+    super.key,
+    this.isPassword = false,
+    this.hintText = '',
+    this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      obscureText: isPassword,
+      onChanged: onChanged,
+      style: const TextStyle(color: Colors.white),
+      cursorColor: Colors.white,
+      decoration: InputDecoration(
+        hintText: hintText,
+        hintStyle: const TextStyle(color: Colors.white54),
+        enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF0074D9), width: 2),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        focusedBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Color(0xFF0074D9), width: 2.5),
+          borderRadius: BorderRadius.circular(12),
+        ),
+        filled: true,
+        fillColor: Colors.transparent,
+        contentPadding:
+            const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
       ),
     );
   }

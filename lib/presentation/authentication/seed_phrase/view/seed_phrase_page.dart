@@ -1,9 +1,6 @@
 import 'package:crypto_wallet/app/app_router.dart';
 import 'package:crypto_wallet/presentation/authentication/seed_phrase/seed_phrase.dart';
-import 'package:cs_ui/cs_ui.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SeedPhrasePage extends StatefulWidget {
@@ -16,7 +13,7 @@ class SeedPhrasePage extends StatefulWidget {
 class _SeedPhrasePageState extends State<SeedPhrasePage> {
   @override
   void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
       context.read<SeedPhraseCubit>().generateMnemonic();
     });
     super.initState();
@@ -24,142 +21,149 @@ class _SeedPhrasePageState extends State<SeedPhrasePage> {
 
   @override
   Widget build(BuildContext context) {
+    final seedCubit = context.watch<SeedPhraseCubit>();
+    final mnemonics = seedCubit.state.mnemonics;
+
     return Scaffold(
-      resizeToAvoidBottomInset: false,
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: CsColors.primary,
-        centerTitle: true,
-        title: Text(
-          'Your Recovery Phrase',
-          style: CsTextStyle.overline.copyWith(
-            color: CsColors.white,
-            fontSize: 20,
-            fontWeight: CsFontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () => context.back(),
-          icon: const Icon(
-            Icons.navigate_before,
-            color: CsColors.white,
-            size: 40,
-          ),
-        ),
-      ),
+      backgroundColor: const Color(0xFF0F1C2E),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20)
-              .add(const EdgeInsets.only(bottom: 20)),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
           child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: context.minBlockVertical * 1.5),
-              Text(
-                '''Write down these 12 words in the correct order and keep them in a safe place''',
-                style: CsTextStyle.overline.copyWith(color: CsColors.white),
-              ),
-              SizedBox(height: context.minBlockVertical * 2),
-              DottedBorder(
-                borderType: BorderType.RRect,
-                dashPattern: const [10, 5],
-                color: CsColors.black.withOpacity(0.4),
-                radius: const Radius.circular(10),
-                child: ClipRRect(
-                  borderRadius: const BorderRadius.all(Radius.circular(12)),
-                  child: Container(
-                    width: double.infinity,
-                    padding: const EdgeInsets.all(10),
-                    child: BlocBuilder<SeedPhraseCubit, SeedPhraseState>(
-                      builder: (context, state) {
-                        return Wrap(
-                          spacing: 8,
-                          runSpacing: 8,
-                          children: state.mnemonics
-                              .asMap()
-                              .map(
-                                (key, text) => MapEntry(
-                                  key,
-                                  MnemonicsChip(
-                                    text: text,
-                                    index: key + 1,
-                                  ),
-                                ),
-                              )
-                              .values
-                              .toList(),
-                        );
-                      },
+              // ✅ العنوان العلوي
+              Column(
+                children: [
+                  Text(
+                    'Gyber',
+                    style: const TextStyle(
+                      fontFamily: 'Nico Moji',
+                      fontSize: 62,
+                      fontWeight: FontWeight.w600,
+                      height: 64 / 52,
+                      color: Colors.white,
                     ),
                   ),
+                  Text(
+                    'Wallet',
+                    style: const TextStyle(
+                      fontFamily: 'Nico Moji',
+                      fontSize: 50,
+                      fontWeight: FontWeight.w600,
+                      height: 64 / 40,
+                      color: Color(0xFFD49D32),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(height: 20),
+
+              // ✅ التحذير
+              const Text(
+                'WARNING',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                  fontSize: 18,
                 ),
               ),
-              SizedBox(height: context.minBlockVertical * 2),
-              BlocBuilder<SeedPhraseCubit, SeedPhraseState>(
-                builder: (context, state) {
-                  //autumn horn own build mandate course fee maximum arrange pipe narrow tonight
-                  return GestureDetector(
-                    onTap: () {
-                      Clipboard.setData(
-                        ClipboardData(text: state.mnemonics.join(' ')),
-                      );
-                      context.showSuccessMessage('Copied Successfully');
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        const Icon(
-                          Icons.copy,
-                          color: CsColors.primary,
-                        ),
-                        const SizedBox(width: 1),
-                        Text(
-                          'Copy to clipboard',
-                          style: CsTextStyle.overline.copyWith(
-                            color: CsColors.primary,
-                            fontWeight: CsFontWeight.semiBold,
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              ),
-              const Spacer(),
-              Container(
-                padding: const EdgeInsets.all(20),
-                decoration: BoxDecoration(
-                  color: Colors.redAccent.withOpacity(0.3),
-                  borderRadius: BorderRadius.circular(10),
+              const SizedBox(height: 4),
+              const Text(
+                'Save your recovery phrase',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
                 ),
-                child: Row(
-                  children: [
-                    const Icon(
-                      Icons.dangerous_outlined,
-                      color: Colors.red,
-                    ),
-                    SizedBox(width: context.minBlockHorizontal * 1),
-                    Expanded(
+              ),
+
+              const SizedBox(height: 20),
+
+              // ✅ المنيومنك في Grid
+              Expanded(
+                child: GridView.builder(
+                  itemCount: mnemonics.length,
+                  gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+                    crossAxisCount: 3,
+                    mainAxisSpacing: 12,
+                    crossAxisSpacing: 12,
+                    childAspectRatio: 2.5,
+                  ),
+                  itemBuilder: (context, index) {
+                    final word = mnemonics[index];
+                    return Container(
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.blueAccent),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      alignment: Alignment.center,
                       child: Text(
-                        '''Keep your recovery phrase in a safe place and don't share it with anyone!''',
-                        style: CsTextStyle.overline.copyWith(
-                          color: Colors.red,
-                          fontWeight: CsFontWeight.semiBold,
+                        word,
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
                         ),
                       ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(height: 12),
+
+              Container(
+                width: 360,
+                height: 80,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF072B40),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
                     ),
                   ],
                 ),
-              ),
-              SizedBox(height: context.minBlockVertical * 1.2),
-              SolidButton(
-                radius: 10,
-                text: 'Continue',
-                onPressed: () {
-                  context.read<SeedPhraseCubit>().clearSelectedMnemonics();
-
-                  context.push(WalletPages.confirmSeedPhrase);
-                },
+                child: Align(
+                  alignment: Alignment.center,
+                  child: SizedBox(
+                    width: 190,
+                    height: 60,
+                    child: GestureDetector(
+                      onTap: () {
+                        context
+                            .read<SeedPhraseCubit>()
+                            .clearSelectedMnemonics();
+                        context.push(WalletPages.confirmSeedPhrase);
+                      },
+                      child: Container(
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [
+                              Color(0xFF4C9010), // أخضر
+                              Color(0xFF4D7DA9), // أزرق باهت
+                            ],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'CONTINUE',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.w400,
+                            color: Colors.white,
+                            letterSpacing: 1,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ),
             ],
           ),

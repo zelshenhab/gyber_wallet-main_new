@@ -49,6 +49,7 @@ flutter:
     - assets/abi/
     - assets/icons/
     - assets/.env
+    - assets/fonts/
 
 dependency_overrides:
   intl: ^0.19.0

@@ -1,7 +1,5 @@
 import 'package:crypto_wallet/app/app_router.dart';
 import 'package:crypto_wallet/presentation/authentication/authentication.dart';
-import 'package:cs_ui/cs_ui.dart';
-import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -10,144 +8,150 @@ class ConfirmSeedPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final state = context.watch<SeedPhraseCubit>().state;
+
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: CsColors.background,
-        centerTitle: true,
-        title: Text(
-          'Check your recovery phrase',
-          style: CsTextStyle.overline.copyWith(
-            fontSize: 20,
-            fontWeight: CsFontWeight.bold,
-          ),
-        ),
-        leading: IconButton(
-          onPressed: () => context.back(),
-          icon: const Icon(
-            Icons.navigate_before,
-            color: CsColors.black,
-            size: 40,
-          ),
-        ),
-      ),
+      backgroundColor: const Color(0xFF0F1C2E),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 20),
-          child: BlocListener<SeedPhraseCubit, SeedPhraseState>(
-            listenWhen: (previous, current) =>
-                previous.status != current.status,
-            listener: (context, state) {
-              if (state.status == SeedPhraseStatus.failure) {
-                context.showErrorMessage(state.errorMessage);
-              }
-            },
-            child: Column(
-              children: [
-                Text(
-                  '''Tap on the words to put them next to each other in the correct order''',
-                  style: CsTextStyle.overline.copyWith(),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 24),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              // ✅ العنوان
+              Center(
+                child: Text(
+                  'Enter seed phrase to import wallet:',
+                  style: const TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
                 ),
-                Expanded(
-                  child: SingleChildScrollView(
-                    child: Column(
-                      children: [
-                        SizedBox(height: context.minBlockVertical * 4),
-                        BlocBuilder<SeedPhraseCubit, SeedPhraseState>(
-                          builder: (context, state) {
-                            return DottedBorder(
-                              borderType: BorderType.RRect,
-                              dashPattern: const [10, 5],
-                              color: CsColors.black.withOpacity(0.4),
-                              radius: const Radius.circular(10),
-                              child: ClipRRect(
-                                borderRadius:
-                                    const BorderRadius.all(Radius.circular(12)),
-                                child: Container(
-                                  width: double.infinity,
-                                  constraints: const BoxConstraints(
-                                    minHeight: 80,
-                                  ),
-                                  padding: const EdgeInsets.all(20),
-                                  child: BlocBuilder<SeedPhraseCubit,
-                                      SeedPhraseState>(
-                                    builder: (context, state) {
-                                      return Wrap(
-                                        spacing: 10,
-                                        runSpacing: 10,
-                                        children: state.confirmMnemonics
-                                            .asMap()
-                                            .map(
-                                              (key, text) => MapEntry(
-                                                key,
-                                                MnemonicsChip(
-                                                  text: text,
-                                                  index: key + 1,
-                                                  onTap: () => context
-                                                      .read<SeedPhraseCubit>()
-                                                      .addSelectedMnemonics(
-                                                        text,
-                                                      ),
-                                                ),
-                                              ),
-                                            )
-                                            .values
-                                            .toList(),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                            );
-                          },
+              ),
+              const SizedBox(height: 20),
+
+              // ✅ الكلمات العشوائية
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: state.randomMnemonics.map((word) {
+                  final isSelected = state.confirmMnemonics.contains(word);
+                  return GestureDetector(
+                    onTap: () {
+                      context
+                          .read<SeedPhraseCubit>()
+                          .addSelectedMnemonics(word);
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(
+                        vertical: 10,
+                        horizontal: 25,
+                      ),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        border: Border.all(
+                          color: Colors.blueAccent,
+                          width: 2,
                         ),
-                        SizedBox(height: context.minBlockVertical * 4),
-                        BlocBuilder<SeedPhraseCubit, SeedPhraseState>(
-                          builder: (context, state) {
-                            return Wrap(
-                              runSpacing: 10,
-                              spacing: 10,
-                              // verticalDirection: VerticalDirection.up,
-                              children: state.randomMnemonics
-                                  .map(
-                                    (text) => MnemonicsChip(
-                                      onTap: () => context
-                                          .read<SeedPhraseCubit>()
-                                          .addSelectedMnemonics(text),
-                                      isSelected:
-                                          state.confirmMnemonics.contains(text),
-                                      text: text,
-                                    ),
-                                  )
-                                  .toList(),
+                        color: isSelected
+                            ? Colors.blueAccent.withOpacity(0.4)
+                            : Colors.transparent,
+                      ),
+                      child: Text(
+                        word,
+                        style: const TextStyle(color: Colors.white),
+                      ),
+                    ),
+                  );
+                }).toList(),
+              ),
+
+              const SizedBox(height: 20),
+
+              // ✅ الكلمات المختارة داخل مربعات صفراء
+              Wrap(
+                spacing: 12,
+                runSpacing: 12,
+                children: List.generate(12, (index) {
+                  final word = index < state.confirmMnemonics.length
+                      ? state.confirmMnemonics[index]
+                      : '';
+                  return Container(
+                    padding: const EdgeInsets.symmetric(
+                      vertical: 10,
+                      horizontal: 40,
+                    ),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      border: Border.all(
+                        color: const Color(0xFFFFC107), // لون أصفر
+                        width: 2,
+                      ),
+                    ),
+                    child: Text(
+                      word,
+                      style: const TextStyle(color: Colors.white),
+                    ),
+                  );
+                }),
+              ),
+
+              const Spacer(),
+
+              // ✅ زر Continue بنفس التنسيق
+              Container(
+                width: double.infinity,
+                height: 80,
+                padding: const EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                  color: const Color(0xFF072B40),
+                  borderRadius: BorderRadius.circular(16),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.5),
+                      blurRadius: 12,
+                      offset: const Offset(0, 6),
+                    ),
+                  ],
+                ),
+                child: Align(
+                  alignment: Alignment
+                      .center, // ممكن تستخدم centerLeft أو centerRight حسب ما تحب
+                  child: GestureDetector(
+                    onTap: state.isMnemonicsValid
+                        ? () {
+                            context.push(
+                              WalletPages.createPin,
+                              args: state.mnemonics.join(' '),
                             );
-                          },
+                          }
+                        : null,
+                    child: Container(
+                      width: 180, // ✅ هنا هيتطبق فعليًا
+                      height: 50,
+                      decoration: BoxDecoration(
+                        gradient: const LinearGradient(
+                          colors: [Color(0xFF4C9010), Color(0xFF4D7DA9)],
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
                         ),
-                        SizedBox(height: context.minBlockVertical * 2),
-                      ],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      alignment: Alignment.center,
+                      child: const Text(
+                        'CONTINUE',
+                        style: TextStyle(
+                          fontSize: 18,
+                          fontWeight: FontWeight.w400,
+                          color: Colors.white,
+                          letterSpacing: 1,
+                        ),
+                      ),
                     ),
                   ),
                 ),
-                SizedBox(height: context.minBlockVertical),
-                BlocBuilder<SeedPhraseCubit, SeedPhraseState>(
-                  builder: (context, state) {
-                    return AbsorbPointer(
-                      absorbing: !state.isMnemonicsValid,
-                      child: Opacity(
-                        opacity: state.isMnemonicsValid ? 1.0 : 0.5,
-                        child: SolidButton(
-                          text: 'Continue',
-                          onPressed: () => context.push(
-                            WalletPages.createPin,
-                            args: state.mnemonics.join(' '),
-                          ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
