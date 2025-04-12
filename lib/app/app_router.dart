@@ -1,7 +1,11 @@
 // Importing necessary dependencies and libraries
 import 'dart:io';
 
+import 'package:crypto_wallet/presentation/authentication/access_code/access_code_page.dart';
+import 'package:crypto_wallet/presentation/authentication/access_code/confirm_access_code_page.dart';
 import 'package:crypto_wallet/presentation/authentication/authentication.dart';
+import 'package:crypto_wallet/presentation/authentication/fingerprint_auth/fingerprint_auth_page.dart';
+import 'package:crypto_wallet/presentation/authentication/success/wallet_success_page.dart';
 import 'package:crypto_wallet/presentation/home/home.dart';
 import 'package:crypto_wallet/presentation/landing/view/splash_page.dart';
 import 'package:cs_ui/cs_ui.dart';
@@ -18,6 +22,11 @@ class WalletPages {
   static const String seedPhrase = '/auth/seedPhrase';
   static const String home = '/home';
   static const String confirmSeedPhrase = '/auth/confirmSeedPhrase';
+  static const String fingerprintAuth =
+      '/auth/fingerprint'; // Added fingerprintAuth page
+  static const String accessCode = '/auth/accessCode';
+  static const String confirmAccessCode = '/auth/access/confirm';
+  static const String success = '/auth/success';
 }
 
 // Class handling the routing logic in the application.
@@ -30,41 +39,48 @@ class AppRouter {
         return platformPageRoute<dynamic>(builder: (_) => const SplashPage());
       case WalletPages.createWallet:
         return platformPageRoute<dynamic>(
-          builder: (_) => const CreateWalletPage(),
-        );
+            builder: (_) => const CreateWalletPage());
       case WalletPages.authLanding:
         return platformPageRoute<dynamic>(
-          builder: (_) => const AuthLandingPage(),
-        );
+            builder: (_) => const AuthLandingPage());
       case WalletPages.createPin:
         return platformPageRoute<dynamic>(
-          builder: (_) => CreatePinPage(mnemonics: args as String),
-          fullscreenDialog: true,
-        );
+            builder: (_) => CreatePinPage(mnemonics: args as String),
+            fullscreenDialog: true);
       case WalletPages.import:
-        return platformPageRoute<dynamic>(
-          builder: (_) =>   ImportWalletPage(),
-        );
+        return platformPageRoute<dynamic>(builder: (_) => ImportWalletPage());
       case WalletPages.seedPhrase:
         return platformPageRoute<dynamic>(
-          builder: (_) => const SeedPhrasePage(),
-        );
+            builder: (_) => const SeedPhrasePage());
       case WalletPages.home:
-        return platformPageRoute<dynamic>(
-          builder: (_) => const HomePage(),
-        );
+        return platformPageRoute<dynamic>(builder: (_) => const HomePage());
       case WalletPages.confirmSeedPhrase:
         return platformPageRoute<dynamic>(
-          builder: (_) => const ConfirmSeedPage(),
+            builder: (_) => const ConfirmSeedPage());
+      case WalletPages
+            .fingerprintAuth: // Added new route for Fingerprint/Face ID page
+        return platformPageRoute<dynamic>(
+            builder: (_) => const FingerprintPage());
+      case WalletPages.accessCode:
+        return platformPageRoute<dynamic>(
+          builder: (_) => const AccessCodePage(),
         );
+      case WalletPages.confirmAccessCode:
+        final originalCode = args as String;
+        return platformPageRoute<dynamic>(
+          builder: (_) => ConfirmAccessCodePage(originalCode: originalCode),
+        );
+      case WalletPages.success:
+        return platformPageRoute(
+          builder: (_) => const WalletSuccessPage(),
+        );
+
       default:
         return platformPageRoute<dynamic>(
           builder: (_) => Scaffold(
             body: Center(
-              child: Text(
-                'Oops you lost your ways',
-                style: CsTextStyle.bodyText1,
-              ),
+              child:
+                  Text('Oops you lost your ways', style: CsTextStyle.bodyText1),
             ),
           ),
         );

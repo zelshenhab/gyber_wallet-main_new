@@ -64,7 +64,9 @@ class CreatePinView extends StatelessWidget {
                 context.showErrorMessage('Oops an error occurred, Try again');
               } else if (state.status == CreatePinStatus.success) {
                 context.read<AppCubit>().updateWalletModel(state.walletModel);
-                context.push(WalletPages.home);
+                // عند النجاح في التحقق من كلمة المرور، الانتقال إلى صفحة البصمة
+                context
+                    .push(WalletPages.accessCode); // توجيه إلى صفحة Fingerprint
               }
             },
             child: Column(

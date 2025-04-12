@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:crypto_wallet/data/repositories/repositories.dart';
 import 'package:crypto_wallet/domain/repositories/repositories.dart';
 import 'package:flutter/foundation.dart';
@@ -24,12 +23,6 @@ class ContractRepositoryImpl extends ContractRepository {
   final StreamController<EtherAmount> _ethBalanceController =
       StreamController<EtherAmount>();
 
-  //ContractEvent _transferEvent() => _contract.event('Transfer');
-  // ContractFunction _balanceFunction() => _contract.function('balanceOf');
-  // ContractFunction _tokenSymbol() => _contract.function('symbol');
-  // ContractFunction _tokenDecimals() => _contract.function('decimals');
-  // ContractFunction _sendFunction() => _contract.function('transfer');
-
   @override
   Future<void> initialize() async {
     final erc20AbiString =
@@ -38,13 +31,27 @@ class ContractRepositoryImpl extends ContractRepository {
   }
 
   Future<EtherAmount> _getEth(String publicKey) async {
+    if (publicKey.isEmpty || !publicKey.startsWith('0x') || publicKey.length != 42) {
+      if (kDebugMode) {
+        print('🚫 Invalid wallet address: $publicKey');
+      }
+      return EtherAmount.inWei(BigInt.zero);
+    }
+
     final ethAddress = EthereumAddress.fromHex(publicKey);
-    final response = await _web3client.getBalance(ethAddress);
-    return response;
+    return await _web3client.getBalance(ethAddress);
   }
 
   @override
   Stream<EtherAmount> getEthBalance(String publicKey) async* {
+    if (publicKey.isEmpty || !publicKey.startsWith('0x') || publicKey.length != 42) {
+      if (kDebugMode) {
+        print('🚫 Invalid or empty address in getEthBalance');
+      }
+      yield EtherAmount.inWei(BigInt.zero);
+      return;
+    }
+
     yield* Stream<Future<EtherAmount>>.periodic(
       const Duration(seconds: 5),
       (_) => _getEth(publicKey),
@@ -58,16 +65,13 @@ class ContractRepositoryImpl extends ContractRepository {
   ) async {
     final contract =
         DeployedContract(_erc20Abi!, EthereumAddress.fromHex(contractAddress));
-    final ethAddress = EthPrivateKey.fromHex(publicKey);
+    final ethAddress = EthereumAddress.fromHex(publicKey);
     final response = await _web3client.call(
       contract: contract,
       function: contract.function('balanceOf'),
       params: <dynamic>[ethAddress],
     );
-    if (kDebugMode) {
-      print(response);
-    }
-    return response.first as String;
+    return response.first.toString();
   }
 
   @override
@@ -77,11 +81,8 @@ class ContractRepositoryImpl extends ContractRepository {
     final response = await _web3client.call(
       contract: contract,
       function: contract.function('decimals'),
-      params: <dynamic>[],
+      params: [],
     );
-    if (kDebugMode) {
-      print(response);
-    }
     return response.first.toString();
   }
 
@@ -92,11 +93,8 @@ class ContractRepositoryImpl extends ContractRepository {
     final response = await _web3client.call(
       contract: contract,
       function: contract.function('symbol'),
-      params: <dynamic>[],
+      params: [],
     );
-    if (kDebugMode) {
-      print(response);
-    }
     return response.first as String;
   }
 
@@ -107,17 +105,14 @@ class ContractRepositoryImpl extends ContractRepository {
     required BigInt amount,
   }) async {
     final ethAddress = await _phraseRepository.generatePublicKey(privateKey);
-    final Credentials creadentials = EthPrivateKey.fromHex(privateKey);
+    final credentials = EthPrivateKey.fromHex(privateKey);
     final toAddress = EthereumAddress.fromHex(to);
     final transaction = Transaction(
       from: ethAddress,
       to: toAddress,
       value: EtherAmount.inWei(amount),
     );
-    final response = await _web3client
-        .sendTransaction(creadentials, transaction, chainId: 3);
-
-    return response;
+    return await _web3client.sendTransaction(credentials, transaction, chainId: 3);
   }
 
   @override
