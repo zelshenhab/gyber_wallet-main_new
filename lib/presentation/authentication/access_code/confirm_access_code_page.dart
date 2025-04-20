@@ -1,10 +1,13 @@
+import 'package:crypto_wallet/data/repositories/phrase_repository_impl.dart';
+import 'package:crypto_wallet/domain/models/wallet_model.dart';
+import 'package:crypto_wallet/presentation/authentication/seed_phrase/cubit/seed_phrase_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:crypto_wallet/app/app_router.dart';
 
 class ConfirmAccessCodePage extends StatefulWidget {
-  const ConfirmAccessCodePage({super.key, required this.originalCode});
-
-  final String originalCode; // الكود الذي تم إدخاله في الصفحة السابقة
+  const ConfirmAccessCodePage({super.key});
 
   @override
   State<ConfirmAccessCodePage> createState() => _ConfirmAccessCodePageState();
@@ -12,11 +15,30 @@ class ConfirmAccessCodePage extends StatefulWidget {
 
 class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
   final TextEditingController _controller = TextEditingController();
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
   String _error = '';
 
-  void _onConfirm() {
-    if (_controller.text == widget.originalCode) {
-      // ✅ الكود صحيح، انتقل إلى الصفحة التالية مثلاً:
+  Future<void> _onConfirm() async {
+    final storedCode = await _secureStorage.read(key: 'access_code');
+    if (_controller.text == storedCode) {
+      final accessCode = _controller.text;
+
+      // 🧠 Get the mnemonics from the SeedPhraseCubit
+      final mnemonicText = context.read<SeedPhraseCubit>().state.mnemonicText;
+
+      // ✅ Generate private/public keys
+      final phraseRepo = PhraseRepositoryImpl();
+      final privateKey = await phraseRepo.generatePrivatekey(mnemonicText);
+      final publicKey = (await phraseRepo.generatePublicKey(privateKey)).hex;
+
+      // ✅ Save wallet data
+      final walletModel = WalletModel(
+        privateKey: privateKey,
+        publicKey: publicKey,
+      );
+      await phraseRepo.saveData(walletModel, accessCode);
+
+      // 🎯 Navigate to success or home
       Navigator.of(context).pushReplacementNamed(WalletPages.success);
     } else {
       setState(() => _error = 'Access code does not match');
@@ -92,27 +114,31 @@ class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
                     ),
                   ],
                 ),
-                child: Center(
-                  child: GestureDetector(
-                    onTap: _onConfirm,
-                    child: Container(
-                      width: 180,
-                      height: 55,
-                      decoration: BoxDecoration(
-                        gradient: const LinearGradient(
-                          colors: [Color(0xFF4C9010), Color(0xFF4D7DA9)],
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
+                child: Padding(
+                  padding: const EdgeInsets.only(right: 16),
+                  child: Align(
+                    alignment: Alignment.centerRight,
+                    child: GestureDetector(
+                      onTap: _onConfirm,
+                      child: Container(
+                        width: 180,
+                        height: 55,
+                        decoration: BoxDecoration(
+                          gradient: const LinearGradient(
+                            colors: [Color(0xFF4C9010), Color(0xFF4D7DA9)],
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                          ),
+                          borderRadius: BorderRadius.circular(12),
                         ),
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      alignment: Alignment.center,
-                      child: const Text(
-                        'CONTINUE',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontWeight: FontWeight.w400,
-                          fontSize: 16,
+                        alignment: Alignment.center,
+                        child: const Text(
+                          'CONTINUE',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.w400,
+                            fontSize: 16,
+                          ),
                         ),
                       ),
                     ),

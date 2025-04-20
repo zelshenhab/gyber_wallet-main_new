@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
-import 'package:crypto_wallet/app/app_router.dart'; // تأكد أنك أضفت هذا المسار الصحيح
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
+import 'package:crypto_wallet/app/app_router.dart';
 
 class AccessCodePage extends StatefulWidget {
   const AccessCodePage({super.key});
@@ -11,6 +12,7 @@ class AccessCodePage extends StatefulWidget {
 
 class _AccessCodePageState extends State<AccessCodePage> {
   final List<String> _input = [];
+  final FlutterSecureStorage _secureStorage = const FlutterSecureStorage();
 
   void _onKeyPressed(String value) {
     if (_input.length < 6) {
@@ -24,16 +26,18 @@ class _AccessCodePageState extends State<AccessCodePage> {
     }
   }
 
-  void _submitCode() {
+  void _submitCode() async {
     if (_input.length == 6) {
       final accessCode = _input.join();
 
+      await _secureStorage.write(key: 'access_code', value: accessCode);
+
       if (kDebugMode) {
-        print('PIN: $accessCode');
+        print('Saved PIN: $accessCode');
       }
 
       Navigator.of(context).pushNamed(
-        WalletPages.confirmAccessCode, // تأكد من إضافتها في AppRouter
+        WalletPages.confirmAccessCode,
         arguments: accessCode,
       );
     }
@@ -79,8 +83,6 @@ class _AccessCodePageState extends State<AccessCodePage> {
               ),
             ),
             const SizedBox(height: 80),
-
-            // ✅ زر CREATE WALLET داخل البطاقة
             Container(
               width: 320,
               height: 80,
@@ -105,10 +107,7 @@ class _AccessCodePageState extends State<AccessCodePage> {
                     height: 50,
                     decoration: BoxDecoration(
                       gradient: const LinearGradient(
-                        colors: [
-                          Color(0xFF4C9010),
-                          Color(0xFF4D7DA9),
-                        ],
+                        colors: [Color(0xFF4C9010), Color(0xFF4D7DA9)],
                         begin: Alignment.topLeft,
                         end: Alignment.bottomRight,
                       ),
@@ -127,7 +126,6 @@ class _AccessCodePageState extends State<AccessCodePage> {
                 ),
               ),
             ),
-
             const Spacer(),
             _buildKeyboard(),
           ],

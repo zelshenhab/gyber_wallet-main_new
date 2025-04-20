@@ -15,19 +15,25 @@ class SeedPhraseState extends Equatable {
     this.errorMessage = '',
     this.isMnemonicsValid = false,
     this.status = SeedPhraseStatus.initial,
+    this.mnemonicText = '',
   });
+
+  final List<String> mnemonics;
+  final List<String> randomMnemonics;
+  final List<String> confirmMnemonics;
+  final SeedPhraseStatus status;
+  final String errorMessage;
+  final bool isMnemonicsValid;
+  final String mnemonicText;
 
   SeedPhraseState copyWith({
     List<String>? mnemonics,
-    String? generatedSeedHex,
-    String? confirmSeedHex,
     List<String>? randomMnemonics,
     List<String>? confirmMnemonics,
-    String? generatedSeedEntropy,
     SeedPhraseStatus? status,
     bool? isMnemonicsValid,
-    String? confirmEntropy,
     String? errorMessage,
+    String? mnemonicText,
   }) {
     return SeedPhraseState(
       mnemonics: mnemonics ?? this.mnemonics,
@@ -36,15 +42,9 @@ class SeedPhraseState extends Equatable {
       status: status ?? this.status,
       isMnemonicsValid: isMnemonicsValid ?? this.isMnemonicsValid,
       errorMessage: errorMessage ?? this.errorMessage,
+      mnemonicText: mnemonicText ?? this.mnemonicText,
     );
   }
-
-  final List<String> mnemonics;
-  final List<String> randomMnemonics;
-  final List<String> confirmMnemonics;
-  final SeedPhraseStatus status;
-  final String errorMessage;
-  final bool isMnemonicsValid;
 
   @override
   List<Object?> get props => [
@@ -54,5 +54,6 @@ class SeedPhraseState extends Equatable {
         confirmMnemonics,
         isMnemonicsValid,
         errorMessage,
+        mnemonicText,
       ];
 }

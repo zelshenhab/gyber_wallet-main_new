@@ -64,41 +64,44 @@ class LandingPage extends StatelessWidget {
                       ),
                     ],
                   ),
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: SizedBox(
-                      width: 200,
-                      height: 60,
-                      child: GestureDetector(
-                        onTap: () => context.push(WalletPages.seedPhrase),
-                        child: Container(
-                          decoration: BoxDecoration(
-                            gradient: const LinearGradient(
-                              colors: [
-                                Color(0xFF4A4B08), // اللون الأخضر الداكن
-                                Color(
-                                    0xFFA46B17), // اللون البرتقالي المائل للبني
-                              ],
-                              begin: Alignment.topLeft,
-                              end: Alignment.bottomRight,
-                            ),
-                            borderRadius: BorderRadius.circular(12),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black.withOpacity(0.3),
-                                blurRadius: 8,
-                                offset: const Offset(0, 4),
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 16),
+                    child: Align(
+                      alignment: Alignment.centerLeft,
+                      child: SizedBox(
+                        width: 200,
+                        height: 60,
+                        child: GestureDetector(
+                          onTap: () => context.push(WalletPages.seedPhrase),
+                          child: Container(
+                            decoration: BoxDecoration(
+                              gradient: const LinearGradient(
+                                colors: [
+                                  Color(0xFF4A4B08), // اللون الأخضر الداكن
+                                  Color(
+                                      0xFFA46B17), // اللون البرتقالي المائل للبني
+                                ],
+                                begin: Alignment.topLeft,
+                                end: Alignment.bottomRight,
                               ),
-                            ],
-                          ),
-                          alignment: Alignment.center,
-                          child: const Text(
-                            'CREATE NEW',
-                            style: TextStyle(
-                              fontSize: 20,
-                              fontWeight: FontWeight.w400,
-                              color: Colors.white,
-                              letterSpacing: 1,
+                              borderRadius: BorderRadius.circular(12),
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.black.withOpacity(0.3),
+                                  blurRadius: 8,
+                                  offset: const Offset(0, 4),
+                                ),
+                              ],
+                            ),
+                            alignment: Alignment.center,
+                            child: const Text(
+                              'CREATE NEW',
+                              style: TextStyle(
+                                fontSize: 20,
+                                fontWeight: FontWeight.w400,
+                                color: Colors.white,
+                                letterSpacing: 1,
+                              ),
                             ),
                           ),
                         ),

@@ -126,38 +126,41 @@ class CreatePinView extends StatelessWidget {
                         ],
                       ),
                       padding: const EdgeInsets.all(8),
-                      child: Align(
-                        alignment: Alignment.center, // وسط البطاقة
-                        child: GestureDetector(
-                          onTap: state.isValid
-                              ? () =>
-                                  context.read<CreatePinCubit>().getUserKeys(
-                                        mnemonics,
-                                        state.password,
-                                      )
-                              : null,
-                          child: Container(
-                            width: 170, // ← تحكم هنا في حجم الزر
-                            height: 55,
-                            decoration: BoxDecoration(
-                              gradient: const LinearGradient(
-                                colors: [
-                                  Color(0xFF4C9010),
-                                  Color(0xFF4D7DA9),
-                                ],
-                                begin: Alignment.topLeft,
-                                end: Alignment.bottomRight,
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 16),
+                        child: Align(
+                          alignment: Alignment.centerRight, // وسط البطاقة
+                          child: GestureDetector(
+                            onTap: state.isValid
+                                ? () =>
+                                    context.read<CreatePinCubit>().getUserKeys(
+                                          mnemonics,
+                                          state.password,
+                                        )
+                                : null,
+                            child: Container(
+                              width: 170, // ← تحكم هنا في حجم الزر
+                              height: 55,
+                              decoration: BoxDecoration(
+                                gradient: const LinearGradient(
+                                  colors: [
+                                    Color(0xFF4C9010),
+                                    Color(0xFF4D7DA9),
+                                  ],
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                ),
+                                borderRadius: BorderRadius.circular(12),
                               ),
-                              borderRadius: BorderRadius.circular(12),
-                            ),
-                            alignment: Alignment.center,
-                            child: const Text(
-                              'CONTINUE',
-                              style: TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.w400,
-                                color: Colors.white,
-                                letterSpacing: 1,
+                              alignment: Alignment.center,
+                              child: const Text(
+                                'CONTINUE',
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                  color: Colors.white,
+                                  letterSpacing: 1,
+                                ),
                               ),
                             ),
                           ),

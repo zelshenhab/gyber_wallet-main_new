@@ -1,5 +1,4 @@
 import 'dart:math';
-
 import 'package:crypto_wallet/domain/repositories/phrase_repository.dart';
 import 'package:equatable/equatable.dart';
 import 'package:flutter/foundation.dart';
@@ -23,15 +22,13 @@ class SeedPhraseCubit extends Cubit<SeedPhraseState> {
       state.copyWith(
         mnemonics: mnemonics,
         randomMnemonics: randomMnemonics,
+        mnemonicText: mnemonic, // ✅ تخزين النص الكامل هنا
       ),
     );
   }
 
   void addSelectedMnemonics(String text) {
-    final currentSelectedMnemonics = <String>[];
-    for (final mnemonic in state.confirmMnemonics) {
-      currentSelectedMnemonics.add(mnemonic);
-    }
+    final currentSelectedMnemonics = List<String>.from(state.confirmMnemonics);
     if (state.confirmMnemonics.contains(text)) {
       currentSelectedMnemonics.remove(text);
     } else {
@@ -77,7 +74,6 @@ class SeedPhraseCubit extends Cubit<SeedPhraseState> {
     }
   }
 }
-//shaft outdoor kingdom romance priority tooth delay harsh walk candy curious viable
 
 extension StringX on String {
   List<String> get toList => split(' ').toList();

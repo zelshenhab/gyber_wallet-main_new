@@ -66,9 +66,8 @@ class AppRouter {
           builder: (_) => const AccessCodePage(),
         );
       case WalletPages.confirmAccessCode:
-        final originalCode = args as String;
         return platformPageRoute<dynamic>(
-          builder: (_) => ConfirmAccessCodePage(originalCode: originalCode),
+          builder: (_) => ConfirmAccessCodePage(),
         );
       case WalletPages.success:
         return platformPageRoute(

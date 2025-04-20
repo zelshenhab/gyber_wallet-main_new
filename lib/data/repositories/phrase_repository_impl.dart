@@ -40,8 +40,8 @@ class PhraseRepositoryImpl extends PhraseRepository {
 
   @override
   Future<EthereumAddress> generatePublicKey(String privateKeyHex) async {
-    final  privateKey = EthPrivateKey.fromHex(privateKeyHex);
-    final  publicAddress = /*await*/ privateKey.address;
+    final privateKey = EthPrivateKey.fromHex(privateKeyHex);
+    final publicAddress = privateKey.address;
     return publicAddress;
   }
 
@@ -69,6 +69,7 @@ class PhraseRepositoryImpl extends PhraseRepository {
       final iv = await _storage.read(key: 'iv');
       final salt = await _storage.read(key: 'salt');
       if (data == null || iv == null || salt == null) return null;
+
       final secretKey =
           Key.fromUtf8(password).stretch(16, salt: IV.fromBase64(salt).bytes);
       final encrypter = Encrypter(AES(secretKey, mode: AESMode.cbc));
@@ -77,6 +78,7 @@ class PhraseRepositoryImpl extends PhraseRepository {
         Encrypted.fromBase64(data),
         iv: IV.fromBase64(iv),
       );
+
       final jsonData = jsonDecode(encrypted) as Map<String, dynamic>;
       return WalletModel.fromJson(jsonData);
     } catch (e) {

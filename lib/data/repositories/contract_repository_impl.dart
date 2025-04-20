@@ -52,6 +52,7 @@ class ContractRepositoryImpl extends ContractRepository {
       return;
     }
 
+
     yield* Stream<Future<EtherAmount>>.periodic(
       const Duration(seconds: 5),
       (_) => _getEth(publicKey),
