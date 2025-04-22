@@ -9,6 +9,7 @@ environment:
 dependencies:
   aes_crypt_null_safe: ^3.0.0
   bip39: ^1.0.6
+  clipboard: ^0.1.3
   cs_ui:
     path: packages/cs_ui
   dotted_border: ^2.0.0+1

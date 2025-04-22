@@ -41,7 +41,7 @@ class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
       // 🎯 Navigate to success or home
       Navigator.of(context).pushReplacementNamed(WalletPages.success);
     } else {
-      setState(() => _error = 'Access code does not match');
+      setState(() => _error = 'PIN code does not match');
     }
   }
 
@@ -54,7 +54,7 @@ class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
         backgroundColor: const Color(0xFF041C2C),
         centerTitle: true,
         title: const Text(
-          'Access Code',
+          'PIN Code',
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         leading: const BackButton(color: Colors.white),
@@ -67,7 +67,7 @@ class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
             children: [
               const Center(
                 child: Text(
-                  'Please confirm your access code',
+                  'Please confirm your PIN code',
                   style: TextStyle(color: Colors.white70, fontSize: 16),
                 ),
               ),
@@ -83,7 +83,7 @@ class _ConfirmAccessCodePageState extends State<ConfirmAccessCodePage> {
                   keyboardType: TextInputType.number,
                   style: const TextStyle(color: Colors.white),
                   decoration: const InputDecoration(
-                    hintText: 'Enter access code',
+                    hintText: 'Enter PIN code',
                     hintStyle: TextStyle(color: Colors.white38),
                     border: InputBorder.none,
                   ),

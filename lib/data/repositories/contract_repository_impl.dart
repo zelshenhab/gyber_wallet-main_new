@@ -31,7 +31,9 @@ class ContractRepositoryImpl extends ContractRepository {
   }
 
   Future<EtherAmount> _getEth(String publicKey) async {
-    if (publicKey.isEmpty || !publicKey.startsWith('0x') || publicKey.length != 42) {
+    if (publicKey.isEmpty ||
+        !publicKey.startsWith('0x') ||
+        publicKey.length != 42) {
       if (kDebugMode) {
         print('🚫 Invalid wallet address: $publicKey');
       }
@@ -44,14 +46,15 @@ class ContractRepositoryImpl extends ContractRepository {
 
   @override
   Stream<EtherAmount> getEthBalance(String publicKey) async* {
-    if (publicKey.isEmpty || !publicKey.startsWith('0x') || publicKey.length != 42) {
+    if (publicKey.isEmpty ||
+        !publicKey.startsWith('0x') ||
+        publicKey.length != 42) {
       if (kDebugMode) {
         print('🚫 Invalid or empty address in getEthBalance');
       }
       yield EtherAmount.inWei(BigInt.zero);
       return;
     }
-
 
     yield* Stream<Future<EtherAmount>>.periodic(
       const Duration(seconds: 5),
@@ -113,7 +116,8 @@ class ContractRepositoryImpl extends ContractRepository {
       to: toAddress,
       value: EtherAmount.inWei(amount),
     );
-    return await _web3client.sendTransaction(credentials, transaction, chainId: 3);
+    return await _web3client.sendTransaction(credentials, transaction,
+        chainId: 3);
   }
 
   @override

@@ -1,16 +1,15 @@
-import 'package:cs_ui/cs_ui.dart';
 import 'package:flutter/material.dart';
 
 class ActionButton extends StatelessWidget {
   const ActionButton({
     super.key,
     required this.icon,
-    required this.text,
+    required this.label,
     this.onTap,
   });
 
   final IconData icon;
-  final String text;
+  final String label;
   final VoidCallback? onTap;
 
   @override
@@ -20,19 +19,21 @@ class ActionButton extends StatelessWidget {
       child: Column(
         children: [
           CircleAvatar(
-            backgroundColor: CsColors.primary,
+            backgroundColor: const Color(0xFF0D406E), // ← اللون الجديد
             radius: 30,
             child: Icon(
               icon,
-              color: CsColors.white,
+              color: Colors.white,
               size: 30,
             ),
           ),
+          const SizedBox(height: 6),
           Text(
-            text,
-            style: CsTextStyle.overline.copyWith(
-              fontSize: 18,
-              fontWeight: CsFontWeight.medium,
+            label,
+            style: const TextStyle(
+              color: Colors.white,
+              fontWeight: FontWeight.w500,
+              fontSize: 14,
             ),
           ),
         ],

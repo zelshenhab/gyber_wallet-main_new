@@ -52,7 +52,7 @@ class _AccessCodePageState extends State<AccessCodePage> {
         backgroundColor: const Color(0xFF041C2C),
         centerTitle: true,
         title: const Text(
-          'Access Code',
+          'PIN Code',
           style: TextStyle(color: Colors.white, fontSize: 16),
         ),
         leading: const BackButton(color: Colors.white),

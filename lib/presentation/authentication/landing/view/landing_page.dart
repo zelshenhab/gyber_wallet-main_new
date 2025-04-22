@@ -99,7 +99,7 @@ class AuthLandingView extends StatelessWidget {
                     ),
                     const SizedBox(height: 30),
                     const Text(
-                      'Enter your 6-digit access code',
+                      'Enter your 6-digit PIN code',
                       style: TextStyle(
                         color: Colors.white70,
                         fontSize: 14,
